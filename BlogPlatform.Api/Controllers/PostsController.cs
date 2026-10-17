@@ -1,9 +1,41 @@
+using BlogPlatform.Api.DTOs;
+using BlogPlatform.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogPlatform.Api.Controllers;
 
 [ApiController]
 [Route("api/posts")]
-public class PostsController : ControllerBase
+public class PostsController(PostService postService) : ControllerBase
 {
+    [HttpPost]
+    [ProducesResponseType<PostResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PostResponse>> Create(CreatePostRequest request, CancellationToken cancellationToken)
+    {
+        var post = await postService.CreateAsync(
+            request.Title,
+            request.Content,
+            cancellationToken);
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = post.Id },
+            post);
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType<PostResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PostResponse>> GetById(int id, CancellationToken cancellationToken)
+    {
+        var post = await postService.GetByIdAsync(id, cancellationToken);
+
+        if (post is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(post);
+    }
 }

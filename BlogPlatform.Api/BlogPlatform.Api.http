@@ -1,0 +1,17 @@
+@HostAddress = http://localhost:5086
+@PostId = 1
+
+POST {{HostAddress}}/api/posts
+Content-Type: application/json
+
+{
+  "title": "My first post",
+  "content": "Hello, world!"
+}
+
+###
+
+GET {{HostAddress}}/api/posts/{{PostId}}
+Accept: application/json
+
+###
