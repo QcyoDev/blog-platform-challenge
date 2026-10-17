@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogPlatform.Api.Services;
 
-public class PostService(BlogDbContext dbContext)
+public class PostService(BlogDbContext dbContext, ILogger<PostService> logger)
 {
     public async Task<PostResponse> CreateAsync(
         string title,
@@ -22,6 +22,8 @@ public class PostService(BlogDbContext dbContext)
         dbContext.Posts.Add(post);
 
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Created blog post {PostId}.", post.Id);
 
         return new PostResponse(post.Id, post.Title, post.Content, post.CreatedAt);
     }
@@ -48,6 +50,8 @@ public class PostService(BlogDbContext dbContext)
         dbContext.Comments.Add(comment);
 
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("Created comment {CommentId} for blog post {PostId}.", comment.Id, postId);
 
         return new CommentResponse(comment.Id, comment.Content, comment.CreatedAt);
     }

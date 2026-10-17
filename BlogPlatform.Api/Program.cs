@@ -1,4 +1,5 @@
 using BlogPlatform.Api.Data;
+using BlogPlatform.Api.ExceptionHandling;
 using BlogPlatform.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddDbContext<BlogDbContext>((services, options) =>
     options.UseSqlite(services.GetRequiredService<IConfiguration>()
@@ -27,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
