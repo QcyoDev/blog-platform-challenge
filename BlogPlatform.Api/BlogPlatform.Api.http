@@ -21,3 +21,12 @@ GET {{HostAddress}}/api/posts
 Accept: application/json
 
 ###
+
+POST {{HostAddress}}/api/posts/{{PostId}}/comments
+Content-Type: application/json
+
+{
+  "content": "Second comment"
+}
+
+###

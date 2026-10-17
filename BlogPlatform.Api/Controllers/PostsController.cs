@@ -24,6 +24,25 @@ public class PostsController(PostService postService) : ControllerBase
             post);
     }
 
+    [HttpPost("{id:int}/comments")]
+    [ProducesResponseType<CommentResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CommentResponse>> AddComment(int id, CreateCommentRequest request, CancellationToken cancellationToken)
+    {
+        var comment = await postService.AddCommentAsync(
+            id,
+            request.Content,
+            cancellationToken);
+
+        if (comment is null)
+        {
+            return NotFound();
+        }
+
+        return StatusCode(StatusCodes.Status201Created, comment);
+    }
+
     [HttpGet]
     [ProducesResponseType<IReadOnlyList<PostSummaryResponse>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<PostSummaryResponse>>> Get(CancellationToken cancellationToken)
