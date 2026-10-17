@@ -15,3 +15,9 @@ GET {{HostAddress}}/api/posts/{{PostId}}
 Accept: application/json
 
 ###
+
+# Returns all posts, ordered by ID descending.
+GET {{HostAddress}}/api/posts
+Accept: application/json
+
+###

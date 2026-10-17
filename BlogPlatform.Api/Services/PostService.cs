@@ -26,6 +26,15 @@ public class PostService(BlogDbContext dbContext)
         return new PostResponse(post.Id, post.Title, post.Content, post.CreatedAt);
     }
 
+    public async Task<IReadOnlyList<PostSummaryResponse>> GetAsync(CancellationToken cancellationToken)
+    {
+        return await dbContext.Posts
+            .AsNoTracking()
+            .OrderByDescending(post => post.Id)
+            .Select(post => new PostSummaryResponse(post.Id, post.Title, post.Comments.Count, post.CreatedAt))
+            .ToListAsync(cancellationToken);
+    }
+
     public Task<PostResponse?> GetByIdAsync(
         int id,
         CancellationToken cancellationToken)

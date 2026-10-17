@@ -24,6 +24,15 @@ public class PostsController(PostService postService) : ControllerBase
             post);
     }
 
+    [HttpGet]
+    [ProducesResponseType<IReadOnlyList<PostSummaryResponse>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<PostSummaryResponse>>> Get(CancellationToken cancellationToken)
+    {
+        var posts = await postService.GetAsync(cancellationToken);
+
+        return Ok(posts);
+    }
+
     [HttpGet("{id:int}")]
     [ProducesResponseType<PostResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
